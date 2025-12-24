@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
-import { Sparkles, Settings, History, Loader2 } from 'lucide-react'
+import { Sparkles, Settings, History, Loader2, Shuffle } from 'lucide-react'
 import { generateImage } from '@/lib/api'
 import type { FluxModel, QualityMode, StylePreset } from '@/types/flux'
 
@@ -68,6 +68,10 @@ export default function FluxGenerator() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleRandomSeed = () => {
+    setSeed(Math.floor(Math.random() * 1000000))
   }
 
   return (
@@ -158,6 +162,21 @@ export default function FluxGenerator() {
                 </div>
               </div>
 
+              {/* 質量模式 */}
+              <div>
+                <label className="text-sm font-medium">質量模式</label>
+                <Select value={quality} onValueChange={(v) => setQuality(v as QualityMode)}>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="economy">經濟模式 (快速)</SelectItem>
+                    <SelectItem value="standard">標準模式 (推薦)</SelectItem>
+                    <SelectItem value="ultra">超高清 (HD)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* 風格 */}
               <div>
                 <label className="text-sm font-medium">風格</label>
@@ -176,6 +195,26 @@ export default function FluxGenerator() {
                     <SelectItem value="minimalist">極簡</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Seed */}
+              <div>
+                <label className="text-sm font-medium flex justify-between">
+                  <span>Seed</span>
+                  <span className="text-muted-foreground">{seed === -1 ? '隨機' : seed}</span>
+                </label>
+                <div className="flex gap-2 mt-2">
+                  <input
+                    type="number"
+                    value={seed}
+                    onChange={(e) => setSeed(parseInt(e.target.value) || -1)}
+                    className="flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    placeholder="-1 為隨機"
+                  />
+                  <Button variant="outline" size="icon" onClick={handleRandomSeed}>
+                    <Shuffle className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
 
               {/* Steps */}
