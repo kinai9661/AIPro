@@ -1,0 +1,14 @@
+name = "flux-ai-pro-v2"
+main = "worker/worker.ts"
+compatibility_date = "2025-12-24"
+
+[site]
+bucket = "./dist"
+
+# 可選: 綁定自定義域名
+# route = "flux-v2.your-domain.com/*"
+
+# 可選: KV 緩存 (需先創建)
+# [[kv_namespaces]]
+# binding = "FLUX_CACHE"
+# id = "your_kv_namespace_id"
