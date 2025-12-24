@@ -12,3 +12,4 @@ bucket = "./dist"
 # [[kv_namespaces]]
 # binding = "FLUX_CACHE"
 # id = "your_kv_namespace_id"
+
