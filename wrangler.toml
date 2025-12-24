@@ -1,4 +1,4 @@
-name = "flux-ai-pro-v2"
+name = "flux-ai-prov2"
 main = "worker/worker.ts"
 compatibility_date = "2025-12-24"
 
