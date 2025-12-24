@@ -38,34 +38,13 @@ export default {
     }
 
     try {
-      // 路由處理
-      switch (path) {
-        case '/health':
-          return handleHealth(env)
-
-        case '/_internal/generate':
-          if (request.method !== 'POST') {
-            return jsonError('Method not allowed', 405)
-          }
-          return handleGenerate(request, env, ctx)
-
-        case '/_internal/models':
-          return handleModels()
-
-        case '/_internal/cache/clear':
-          if (request.method !== 'POST') {
-            return jsonError('Method not allowed', 405)
-          }
-          return handleCacheClear(env)
-
-        default:
-          // 靜態資源 (Vite 構建產物)
-          if (path.startsWith('/assets/')) {
-            return env.ASSETS.fetch(request)
-          }
-          // SPA fallback
-          return env.ASSETS.fetch(new Request(new URL('/', request.url), request))
+      // API 路由 - 優先處理
+      if (path.startsWith('/api/')) {
+        return handleAPIRoute(path.replace('/api', ''), request, env, ctx)
       }
+
+      // 靜態資源 - 直接返回
+      return env.ASSETS.fetch(request)
     } catch (error) {
       console.error('Worker error:', error)
       return jsonError(
@@ -74,6 +53,39 @@ export default {
       )
     }
   },
+}
+
+/**
+ * 處理 API 路由
+ */
+async function handleAPIRoute(
+  path: string,
+  request: Request,
+  env: Env,
+  ctx: ExecutionContext
+): Promise<Response> {
+  switch (path) {
+    case '/health':
+      return handleHealth(env)
+
+    case '/generate':
+      if (request.method !== 'POST') {
+        return jsonError('Method not allowed', 405)
+      }
+      return handleGenerate(request, env, ctx)
+
+    case '/models':
+      return handleModels()
+
+    case '/cache/clear':
+      if (request.method !== 'POST') {
+        return jsonError('Method not allowed', 405)
+      }
+      return handleCacheClear(env)
+
+    default:
+      return jsonError('Not found', 404)
+  }
 }
 
 /**
@@ -101,26 +113,7 @@ async function handleGenerate(
       return jsonError(result.error || 'Generation failed', 500)
     }
 
-    // 單圖直接返回二進制
-    if (body.n === 1 && result.data?.[0]) {
-      const imageData = result.data[0].image
-      const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '')
-      const buffer = base64ToArrayBuffer(base64Data)
-
-      return new Response(buffer, {
-        status: 200,
-        headers: {
-          'Content-Type': 'image/png',
-          'Cache-Control': 'public, max-age=31536000, immutable',
-          'X-Seed': result.data[0].seed.toString(),
-          'X-Model': result.data[0].model,
-          'X-Generation-Time': result.data[0].generation_time.toString(),
-          ...CORS_HEADERS,
-        },
-      })
-    }
-
-    // 多圖返回 JSON
+    // 返回 JSON 格式
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: {
@@ -259,16 +252,4 @@ function jsonError(message: string, status: number): Response {
       },
     }
   )
-}
-
-/**
- * Base64 轉 ArrayBuffer
- */
-function base64ToArrayBuffer(base64: string): ArrayBuffer {
-  const binaryString = atob(base64)
-  const bytes = new Uint8Array(binaryString.length)
-  for (let i = 0; i < binaryString.length; i++) {
-    bytes[i] = binaryString.charCodeAt(i)
-  }
-  return bytes.buffer
 }
