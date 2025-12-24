@@ -3,14 +3,58 @@ export type FluxModel = 'zimage' | 'flux' | 'turbo' | 'kontext'
 export type QualityMode = 'economy' | 'standard' | 'ultra'
 
 export type StylePreset = 
+  // 無風格
   | 'none'
+  // 藝術風格 (10)
   | 'anime'
-  | 'photorealistic'
-  | 'oil-painting'
+  | 'manga'
+  | 'comic-book'
+  | 'cartoon'
+  | 'pixel-art'
+  | 'line-art'
+  | 'sketch'
   | 'watercolor'
-  | 'cyberpunk'
+  | 'oil-painting'
+  | 'digital-art'
+  // 寫實風格 (8)
+  | 'photorealistic'
+  | 'portrait'
+  | 'landscape'
+  | 'cinematic'
+  | 'documentary'
+  | 'studio-photo'
+  | 'street-photography'
+  | 'macro'
+  // 奇幻風格 (8)
   | 'fantasy'
+  | 'sci-fi'
+  | 'cyberpunk'
+  | 'steampunk'
+  | 'gothic'
+  | 'dark-fantasy'
+  | 'mythological'
+  | 'surreal'
+  // 現代藝術 (7)
   | 'minimalist'
+  | 'abstract'
+  | 'pop-art'
+  | 'graffiti'
+  | 'low-poly'
+  | 'vaporwave'
+  | 'synthwave'
+  // 經典藝術 (6)
+  | 'renaissance'
+  | 'baroque'
+  | 'impressionist'
+  | 'art-nouveau'
+  | 'art-deco'
+  | 'ukiyo-e'
+  // 氣氛風格 (5)
+  | 'noir'
+  | 'vintage'
+  | 'retro'
+  | 'horror'
+  | 'ethereal'
 
 export interface GenerateParams {
   prompt: string
@@ -25,6 +69,7 @@ export interface GenerateParams {
   n: number
   auto_optimize: boolean
   auto_hd: boolean
+  image?: string
   reference_images?: string[]
 }
 
@@ -53,4 +98,11 @@ export interface ModelConfig {
   speed: number
   quality: number
   maxSize: number
+}
+
+export interface StyleInfo {
+  value: StylePreset
+  label: string
+  description: string
+  category: string
 }
