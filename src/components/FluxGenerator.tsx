@@ -259,19 +259,19 @@ export default function FluxGenerator() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">深色模式</label>
-                    <Switch checked={settings.darkMode} onCheckedChange={(v) => setSettings({...settings, darkMode: v})} />
+                    <Switch checked={settings.darkMode} onCheckedChange={(v: boolean) => setSettings({...settings, darkMode: v})} />
                   </div>
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">自動保存歷史</label>
-                    <Switch checked={settings.autoSave} onCheckedChange={(v) => setSettings({...settings, autoSave: v})} />
+                    <Switch checked={settings.autoSave} onCheckedChange={(v: boolean) => setSettings({...settings, autoSave: v})} />
                   </div>
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">自動優化提示詞</label>
-                    <Switch checked={settings.autoOptimize} onCheckedChange={(v) => setSettings({...settings, autoOptimize: v})} />
+                    <Switch checked={settings.autoOptimize} onCheckedChange={(v: boolean) => setSettings({...settings, autoOptimize: v})} />
                   </div>
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">啟用 HD 增強</label>
-                    <Switch checked={settings.autoHD} onCheckedChange={(v) => setSettings({...settings, autoHD: v})} />
+                    <Switch checked={settings.autoHD} onCheckedChange={(v: boolean) => setSettings({...settings, autoHD: v})} />
                   </div>
                   <div>
                     <label className="text-sm font-medium">API Key (可選)</label>
