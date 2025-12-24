@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Switch } from '@/components/ui/switch'
 import { Sparkles, Settings, History, Loader2, Shuffle, Download, Copy, ZoomIn, Trash2, Upload, X } from 'lucide-react'
 import { generateImage } from '@/lib/api'
+import { STYLE_CATEGORIES, getStyleInfo } from '@/lib/styles'
 import type { FluxModel, QualityMode, StylePreset } from '@/types/flux'
 
 interface HistoryItem {
@@ -184,6 +185,8 @@ export default function FluxGenerator() {
     setShowSettings(false)
     alert('設置已保存!')
   }
+  
+  const currentStyleInfo = getStyleInfo(style)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -372,22 +375,29 @@ export default function FluxGenerator() {
                 </Select>
               </div>
 
-              {/* 風格 */}
+              {/* 風格 - 45種分類 */}
               <div>
-                <label className="text-sm font-medium">風格</label>
+                <label className="text-sm font-medium flex justify-between">
+                  <span>風格</span>
+                  {currentStyleInfo && (
+                    <span className="text-muted-foreground text-xs">{currentStyleInfo.description}</span>
+                  )}
+                </label>
                 <Select value={style} onValueChange={(v) => setStyle(v as StylePreset)}>
                   <SelectTrigger className="mt-2">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">無 (原始)</SelectItem>
-                    <SelectItem value="anime">動漫</SelectItem>
-                    <SelectItem value="photorealistic">寫實</SelectItem>
-                    <SelectItem value="oil-painting">油畫</SelectItem>
-                    <SelectItem value="watercolor">水彩</SelectItem>
-                    <SelectItem value="cyberpunk">賽博朋克</SelectItem>
-                    <SelectItem value="fantasy">奇幻</SelectItem>
-                    <SelectItem value="minimalist">極簡</SelectItem>
+                  <SelectContent className="max-h-[400px]">
+                    {STYLE_CATEGORIES.map((category) => (
+                      <SelectGroup key={category.name}>
+                        <SelectLabel>{category.name}</SelectLabel>
+                        {category.styles.map((style) => (
+                          <SelectItem key={style.value} value={style.value}>
+                            {style.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
